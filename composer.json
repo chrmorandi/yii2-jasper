@@ -1,5 +1,5 @@
 {
-    "name": "cossou/jasperphp",
+    "name": "chrmorandi/yii2-jasper",
     "description": "Create Reports in PHP with JasperReports",
     "license": "MIT",
     "keywords": [
@@ -10,16 +10,17 @@
         "pdf",
         "java"
       ],
-    "homepage": "https://github.com/cossou/JasperPHP",
+    "homepage": "https://github.com/chrmorandi/yii2-jasper",
     "authors": [
         {
-            "name": "Hélder Duarte",
-            "email": "cossou@gmail.com"
+            "name": "Christopher M. Mota",
+            "email": "chrmorandi@gmail.com"
         }
     ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
     "autoload": {
-        "psr-0": {
-            "JasperPHP": "src/"
-        }
+        "psr-4": { "Jasper\\": "src/Jasper/" }
     }
 }

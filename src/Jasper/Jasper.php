@@ -1,7 +1,8 @@
 <?php
-namespace JasperPHP;
 
-class JasperPHP
+namespace chrmorandi\Jasper;
+
+class Jasper
 {
     protected $executable = "/../JasperStarter/bin/jasperstarter";
     protected $the_command;

@@ -40,7 +40,7 @@ I recommend using [Jaspersoft Studio](http://community.jaspersoft.com/project/ja
 
 ###The *Hello World* example.
 
-Go to the examples directory in the root of the repository (`vendor/cossou/jasperphp/examples`).
+Go to the examples directory in the root of the repository (`vendor/chrmorandi/yii2-jasper/examples`).
 Open the `hello_world.jrxml` file with iReport or with your favorite text editor and take a look at the source code.
 
 #### Compiling
@@ -50,12 +50,11 @@ First we need to compile our `JRXML` file into a `JASPER` binary file. We just h
 **Note:** You don't need to do this step if you are using *Jaspersoft Studio*. You can compile directly within the program.
 
 ```php
-JasperPHP::compile(base_path() . '/vendor/cossou/jasperphp/examples/hello_world.jrxml')->execute();
+JasperPHP::compile(base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jrxml')->execute();
 ```
 
 This commando will compile the `hello_world.jrxml` source file to a `hello_world.jasper` file.
 
-**Note:** If you are using Laravel 4 run `php artisan tinker` and copy & paste the command above.
 
 ####Processing
 
@@ -63,7 +62,7 @@ Now lets process the report that we compile before:
 
 ```php
 JasperPHP::process(
-	base_path() . '/vendor/cossou/jasperphp/examples/hello_world.jasper',
+	base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
 	false,
 	array("pdf", "rtf"),
 	array("php_version" => phpversion())
@@ -93,7 +92,7 @@ We can also specify parameters for connecting to database:
 
 ```php
 JasperPHP::process(
-    base_path() . '/vendor/cossou/jasperphp/examples/hello_world.jasper',
+    base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
     false,
     array("pdf", "rtf"),
     array("php_version" => phpversion()),
@@ -109,9 +108,10 @@ JasperPHP::process(
 
 ##Requirements
 
-* Java JDK 1.6
+* Java JDK 6.0 or higher
 * PHP [exec()](http://php.net/manual/function.exec.php) function
-* [optional] [Mysql Connector](http://dev.mysql.com/downloads/connector/j/) (if you want to use database)
+* [optional] [Mysql Connector](http://dev.mysql.com/downloads/connector/j/) (if you want to use Mysql database)
+* [optional] [PostgreSQL Connector](https://jdbc.postgresql.org/download.html) (if you want to use PostgreSQL database)
 * [optional] [Jaspersoft Studio](http://community.jaspersoft.com/project/jaspersoft-studio) (to draw and compile your reports)
 
 
@@ -123,9 +123,9 @@ Check if you already have Java installed:
 
 ```
 $ java -version
-java version "1.6.0_51"
-Java(TM) SE Runtime Environment (build 1.6.0_51-b11-457-11M4509)
-Java HotSpot(TM) 64-Bit Server VM (build 20.51-b01-457, mixed mode)
+java version "1.7.0_80"
+Java(TM) SE Runtime Environment (build 1.7.0_80-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 24.80-b11, mixed mode)
 ```
 
 If you get:
@@ -143,7 +143,7 @@ Now run the `java -version` again and check if the output is ok.
 Install [Composer](http://getcomposer.org) if you don't have it.
 
 ```
-composer require cossou/jasperphp
+composer require chrmorandi/yii2-jasper
 ```
 
 Or in your `composer.json` file add:
@@ -151,7 +151,7 @@ Or in your `composer.json` file add:
 ```javascript
 {
     "require": {
-		"cossou/jasperphp": "~2",
+		"chrmorandi/yii2-jasper": "*",
     }
 }
 ```
@@ -162,45 +162,35 @@ And the just run:
 
 and thats it.
 
-###Using Laravel 5?
-
-We don't provide a specific package for L5 but you can easily use JasperPHP.
+###Using
 
 ```php
-use JasperPHP\JasperPHP as JasperPHP;
+use chrmorandi\Jasper;
 
-Route::get('/', function () {
+public function actionIndex()
+{
+    $jasper = new Jasper;
 
-    $jasper = new JasperPHP;
+    // Compile a JRXML to Jasper
+    $jasper->compile(__DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jrxml')->execute();
 
-	// Compile a JRXML to Jasper
-    $jasper->compile(__DIR__ . '/../../vendor/cossou/jasperphp/examples/hello_world.jrxml')->execute();
-
-	// Process a Jasper file to PDF and RTF (you can use directly the .jrxml)
+    // Process a Jasper file to PDF and RTF (you can use directly the .jrxml)
     $jasper->process(
-        __DIR__ . '/../../vendor/cossou/jasperphp/examples/hello_world.jasper',
+        __DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
         false,
         array("pdf", "rtf"),
         array("php_version" => "xxx")
     )->execute();
 
-	// List the parameters from a Jasper file.
+    // List the parameters from a Jasper file.
     $array = $jasper->list_parameters(
-        __DIR__ . '/../../vendor/cossou/jasperphp/examples/hello_world.jasper'
+        __DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper'
     )->execute();
 
-    return view('welcome');
-});
+    return 'teste';
+}
+}
 ```
-
-###Using Laravel 4?
-
-Add to your `app/config/app.php` providers array:
-
-```php
-'JasperPHP\JasperPHPServiceProvider',
-```
-Now you will have the `JasperPHP` alias available.
 
 ###MySQL
 
@@ -208,21 +198,13 @@ We ship the [MySQL connector](http://dev.mysql.com/downloads/connector/j/) (v5.1
 
 ###PostgreSQL
 
-We ship the [PostgreSQL](https://jdbc.postgresql.org/) (v9.4-1203) in the `/src/JasperStarter/jdbc/` directory.
+We ship the [PostgreSQL](https://jdbc.postgresql.org/) (v9.4-1208) in the `/src/JasperStarter/jdbc/` directory.
 
 ##Performance
 
 Depends on the complexity, amount of data and the resources of your machine (let me know your use case).
 
 I have a report that generates a *Invoice* with a DB connection, images and multiple pages and it takes about **3/4 seconds** to process. I suggest that you use a worker to generate the reports in the background.
-
-##Thanks
-
-Thanks to [Cenote GmbH](http://www.cenote.de/) for the [JasperStarter](http://jasperstarter.sourceforge.net/) tool.
-
-##Questions?
-
-Drop me a line on Twitter [@cossou](https://twitter.com/cossou).
 
 ##License
 
