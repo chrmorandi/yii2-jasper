@@ -2,9 +2,9 @@
 
 require_once __DIR__ . '/../vendor/autoload.php'; // Autoload files using Composer autoload
 
-use JasperPHP\JasperPHP;
+use chrmorandi\Jasper;
 
-class jasperphpTest extends \PHPUnit_Framework_TestCase
+class jasperTest extends \PHPUnit_Framework_TestCase
 {
     protected $executable = "/../JasperStarter/bin/jasperstarter";
 
