@@ -1,11 +1,16 @@
 # JasperReports for PHP
 
+[![Latest Stable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/stable)](https://packagist.org/packages/chrmorandi/yii2-jasper) 
+[![Latest Unstable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/unstable)](https://packagist.org/packages/chrmorandi/yii2-jasper)
+[![Total Downloads](https://poser.pugx.org/chrmorandi/yii2-jasper/downloads)](https://packagist.org/packages/chrmorandi/yii2-jasper) 
+[![License](https://poser.pugx.org/chrmorandi/yii2-jasper/license)](https://packagist.org/packages/chrmorandi/yii2-jasper)
+
 Package to generate reports with [JasperReports 6](http://community.jaspersoft.com/project/jasperreports-library) library through [JasperStarter v3](http://jasperstarter.sourceforge.net/) command-line tool.
 
 ##Install
 
 ```
-composer require chrmorandi/jasperphp
+composer require chrmorandi/jasper
 ```
 
 ##Introduction
@@ -14,11 +19,9 @@ This package aims to be a solution to compile and process JasperReports (.jrxml 
 
 ###Why?
 
-Did you ever had to create a good looking Invoice with a lot of fields for your great web app?
+**JasperReports** is the best open source solution for reporting.
 
-I had to, and the solutions out there were not perfect. Generating *HTML* + *CSS* to make a *PDF*? WTF? That doesn't make any sense! :)
-
-Then I found **JasperReports** the best open source solution for reporting.
+Generating HTML + CSS to make a PDF. Never think about it, that doesn't make any sense! :p
 
 ###What can I do with this?
 
@@ -30,11 +33,11 @@ Well, everything. JasperReports is a powerful tool for **reporting** and **BI**.
 
 I recommend using [Jaspersoft Studio](http://community.jaspersoft.com/project/jaspersoft-studio) to build your reports, connect it to your datasource (ex: MySQL), loop thru the results and output it to PDF, XLS, DOC, RTF, ODF, etc.
 
-*Some examples of what you can do:*
+*What you can do with Jaspersoft:*
 
-* Invoices
-* Reports
-* Listings
+* Graphical design environment
+* Pixel-perfect report generation
+* Output to PDF, HTML, CSV, XLS, TXT, RTF and more
 
 ##Examples
 
@@ -108,7 +111,7 @@ JasperPHP::process(
 
 ##Requirements
 
-* Java JDK 6.0 or higher
+* Java JDK 1.6 or higher
 * PHP [exec()](http://php.net/manual/function.exec.php) function
 * [optional] [Mysql Connector](http://dev.mysql.com/downloads/connector/j/) (if you want to use Mysql database)
 * [optional] [PostgreSQL Connector](https://jdbc.postgresql.org/download.html) (if you want to use PostgreSQL database)
@@ -187,8 +190,7 @@ public function actionIndex()
         __DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper'
     )->execute();
 
-    return 'teste';
-}
+    return ;
 }
 ```
 

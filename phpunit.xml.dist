@@ -12,7 +12,7 @@ syntaxCheck="false"
 
   <filter>
     <whitelist>
-      <directory>src/JasperPHP</directory>
+      <directory>src/Jasper</directory>
       <directory>src/JasperStarter</directory>
     </whitelist>
   </filter>
