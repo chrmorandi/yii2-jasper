@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": { 
-            "chrmorando\\Jasper\\": "src/Jasper/" 
+            "chrmorandi\\jasper\\": "src/Jasper/" 
         }
     }
 }

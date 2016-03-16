@@ -1,9 +1,37 @@
 <?php
 
-namespace chrmorandi\Jasper;
+namespace chrmorandi\jasper;
 
-class Jasper
+use yii\base\Component;
+use yii\db\Connection;
+use yii\di\Instance;
+
+/**
+ * Jasper implements JasperReport application component creating reports.
+ *
+ * By default, Jasper create reports whithout database.
+ *
+ *
+ * ```php
+ * 'jasper' => [
+ *     'class' => 'chrmorandi\jasper',
+ *     // 'db' => 'mydb',
+ * ]
+ * ```
+ *
+ * @author Christopher M. Mota <chrmorandi@gmail.com>
+ * @since 1.0.0
+ */
+class Jasper extends Component
 {
+    /**
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     * After the Jasper object is created, if you want to change this property, you should only assign it
+     * with a DB connection object.
+     */
+    public $db = 'db';
+    
+    
     protected $executable = "/../JasperStarter/bin/jasperstarter";
     protected $the_command;
     protected $redirect_output;
@@ -12,8 +40,16 @@ class Jasper
     protected $formats = array('pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods', 'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint');
     protected $resource_directory; // Path to report resource dir or jar file
 
-    function __construct($resource_dir = false)
+    /**
+     * Initializes the Japer component.
+     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+     * @throws InvalidConfigException if [[db]] is invalid.
+     */
+    function init($resource_dir = false)
     {
+        parent::init();
+        $this->db = Instance::ensure($this->db, Connection::className());
+        
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
            $this->windows = true;
 
@@ -27,6 +63,9 @@ class Jasper
         }
     }
 
+    /*
+     * Reaches the methods of static form.
+     */
     public static function __callStatic($method, $parameters)
     {
         // Create a new instance of the called class, in this case it is Post
@@ -36,6 +75,9 @@ class Jasper
         return call_user_func_array(array(new $model, $method), $parameters);
     }
 
+    /*
+     * Compile JasperReport template(JRXML) to native binary format, called Jasper file.
+     */
     public function compile($input_file, $output_file = false, $background = true, $redirect_output = true)
     {
         if(is_null($input_file) || empty($input_file))
@@ -57,6 +99,9 @@ class Jasper
         return $this;
     }
 
+    /*
+     * Generates report . Accepts files in the format ".jrxml" or ".jasper".
+     */
     public function process($input_file, $output_file = false, $format = array("pdf"), $parameters = array(), $db_connection = array(), $background = true, $redirect_output = true)
     {
         if(is_null($input_file) || empty($input_file))
