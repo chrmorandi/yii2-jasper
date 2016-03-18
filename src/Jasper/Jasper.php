@@ -4,7 +4,6 @@ namespace chrmorandi\jasper;
 
 use yii\base\Component;
 use yii\db\Connection;
-use yii\di\Instance;
 
 /**
  * Jasper implements JasperReport application component creating reports.
@@ -15,7 +14,17 @@ use yii\di\Instance;
  * ```php
  * 'jasper' => [
  *     'class' => 'chrmorandi\jasper',
- *     // 'db' => 'mydb',
+ *     'db' => [
+ *         'host' => localhost,
+ *         'port' => 5432,    
+ *         'driver' => 'postgres',
+ *         'dbname' => db_banco,
+ *         'username' => 'cajui',
+ *         'password' => 'cajui',
+ *         //'jdbcDir' => './jdbc', **Defaults to ./jdbc
+ *         //'jdbcUrl' => 'jdbc:postgresql://"+host+":"+port+"/"+dbname',
+ *     ]
+ *     
  * ]
  * ```
  *
@@ -29,59 +38,47 @@ class Jasper extends Component
      * After the Jasper object is created, if you want to change this property, you should only assign it
      * with a DB connection object.
      */
-    public $db = 'db';
-    
+    public $db;    
+    public $redirect_output = true;
+    protected $resource_directory = false; // Path to report resource dir or jar file
     
     protected $executable = "/../JasperStarter/bin/jasperstarter";
-    protected $the_command;
-    protected $redirect_output;
+    protected $the_command;    
     protected $background;
     protected $windows = false;
     protected $formats = array('pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods', 'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint');
-    protected $resource_directory; // Path to report resource dir or jar file
+    
 
     /**
-     * Initializes the Japer component.
+     * Initializes the Jasper component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
      * @throws InvalidConfigException if [[db]] is invalid.
      */
-    function init($resource_dir = false)
+    function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
-        
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+                
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'){
            $this->windows = true;
+        }
 
-        if (!$resource_dir) {
+        if (!$this->resource_directory) {
             $this->resource_directory = __DIR__ . "/../../../../../";
         } else {
-            if (!file_exists($resource_dir))
+            if (!file_exists($this->resource_directory)){
                 throw new \Exception("Invalid resource directory", 1);
-
-            $this->resource_directory = $resource_dir;
+            }
         }
-    }
-
-    /*
-     * Reaches the methods of static form.
-     */
-    public static function __callStatic($method, $parameters)
-    {
-        // Create a new instance of the called class, in this case it is Post
-        $model = get_called_class();
-
-        // Call the requested method on the newly created object
-        return call_user_func_array(array(new $model, $method), $parameters);
     }
 
     /*
      * Compile JasperReport template(JRXML) to native binary format, called Jasper file.
      */
-    public function compile($input_file, $output_file = false, $background = true, $redirect_output = true)
+    public function compile($input_file, $output_file = false, $background = false)
     {
-        if(is_null($input_file) || empty($input_file))
+        if(is_null($input_file) || empty($input_file)){
             throw new \Exception("No input file", 1);
+        }
 
         $command = __DIR__ . $this->executable;
 
@@ -89,10 +86,10 @@ class Jasper extends Component
 
         $command .= $input_file;
 
-        if( $output_file !== false )
+        if( $output_file !== false ){
             $command .= " -o " . $output_file;
+        }
 
-        $this->redirect_output  = $redirect_output;
         $this->background       = $background;
         $this->the_command      = escapeshellcmd($command);
 
@@ -102,10 +99,11 @@ class Jasper extends Component
     /*
      * Generates report . Accepts files in the format ".jrxml" or ".jasper".
      */
-    public function process($input_file, $output_file = false, $format = array("pdf"), $parameters = array(), $db_connection = array(), $background = true, $redirect_output = true)
+    public function process($input_file, $output_file = false, $format = array("pdf"), $background = false)
     {
-        if(is_null($input_file) || empty($input_file))
+        if(is_null($input_file) || empty($input_file)){
             throw new \Exception("No input file", 1);
+        }
 
         if( is_array($format) )
         {
@@ -125,13 +123,15 @@ class Jasper extends Component
 
         $command .= $input_file;
 
-        if( $output_file !== false )
+        if( $output_file !== false ){
             $command .= " -o " . $output_file;
+        }
 
-        if( is_array($format) )
+        if( is_array($format) ){
             $command .= " -f " . join(" ", $format);
-        else
+        }else{
             $command .= " -f " . $format;
+        }
 
         // Resources dir
         $command .= " -r " . $this->resource_directory;
@@ -145,38 +145,36 @@ class Jasper extends Component
             }
         }
 
-        if( count($db_connection) > 0 )
+        if(isset($this->db) )
         {
-            $command .= " -t " . $db_connection['driver'];
-            $command .= " -u " . $db_connection['username'];
+            $command .= " -t " . $this->db['driver'];
+            $command .= " -u " . $this->db['username'];
 
-            if( isset($db_connection['password']) && !empty($db_connection['password']) )
-                $command .= " -p " . $db_connection['password'];
+            if( isset($this->db['password']) && !empty($this->db['password']) ){
+                $command .= " -p " . $this->db['password'];
+            }
 
-            if( isset($db_connection['host']) && !empty($db_connection['host']) )
-                $command .= " -H " . $db_connection['host'];
+            if( isset($this->db['host']) && !empty($this->db['host']) ){
+                $command .= " -H " . $this->db['host'];
+            }
 
-            if( isset($db_connection['database']) && !empty($db_connection['database']) )
-                $command .= " -n " . $db_connection['database'];
+            if( isset($this->db['dbname']) && !empty($this->db['dbname']) ){
+                $command .= " -n " . $this->db['dbname'];
+            }
 
-            if( isset($db_connection['port']) && !empty($db_connection['port']) )
-                $command .= " --db-port " . $db_connection['port'];
+            if( isset($this->db['port']) && !empty($this->db['port']) ){
+                $command .= " --db-port " . $this->db['port'];
+            }
 
-            if( isset($db_connection['jdbc_driver']) && !empty($db_connection['jdbc_driver']) )
-                $command .= " --db-driver " . $db_connection['jdbc_driver'];
+            if( isset($this->db['jdbc_url']) && !empty($this->db['jdbc_url']) ){
+                $command .= " --db-url " . $this->db['jdbc_url'];
+            }
 
-            if( isset($db_connection['jdbc_url']) && !empty($db_connection['jdbc_url']) )
-                $command .= " --db-url " . $db_connection['jdbc_url'];
-
-            if ( isset($db_connection['jdbc_dir']) && !empty($db_connection['jdbc_dir']) ) 
-                $command .= ' --jdbc-dir ' . $db_connection['jdbc_dir'];
-
-            if ( isset($db_connection['db_sid']) && !empty($db_connection['db_sid']) )
-                $command .= ' --db-sid ' . $db_connection['db_sid'];
-
+            if ( isset($this->db['jdbc_dir']) && !empty($this->db['jdbc_dir']) ){ 
+                $command .= ' --jdbc-dir ' . $this->db['jdbc_dir'];
+            }
         }
 
-        $this->redirect_output  = $redirect_output;
         $this->background       = $background;
         $this->the_command      = escapeshellcmd($command);
 

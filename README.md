@@ -46,68 +46,6 @@ I recommend using [Jaspersoft Studio](http://community.jaspersoft.com/project/ja
 Go to the examples directory in the root of the repository (`vendor/chrmorandi/yii2-jasper/examples`).
 Open the `hello_world.jrxml` file with iReport or with your favorite text editor and take a look at the source code.
 
-#### Compiling
-
-First we need to compile our `JRXML` file into a `JASPER` binary file. We just have to do this one time.
-
-**Note:** You don't need to do this step if you are using *Jaspersoft Studio*. You can compile directly within the program.
-
-```php
-JasperPHP::compile(base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jrxml')->execute();
-```
-
-This commando will compile the `hello_world.jrxml` source file to a `hello_world.jasper` file.
-
-
-####Processing
-
-Now lets process the report that we compile before:
-
-```php
-JasperPHP::process(
-	base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
-	false,
-	array("pdf", "rtf"),
-	array("php_version" => phpversion())
-)->execute();
-```
-
-Now check the examples folder! :) Great right? You now have 2 files, `hello_world.pdf` and `hello_world.rtf`.
-
-Check the *API* of the  `compile` and `process` functions in the file `src/JasperPHP/JasperPHP.php` file.
-
-####Listing Parameters
-
-Querying the jasper file to examine parameters available in the given jasper report file:
-
-```php
-$output = JasperPHP::list_parameters(
-		base_path() . '/vendor/cossou/jasperphp/examples/hello_world.jasper'
-	)->execute();
-
-foreach($output as $parameter_description)
-	echo $parameter_description;
-```
-
-###Advanced example
-
-We can also specify parameters for connecting to database:
-
-```php
-JasperPHP::process(
-    base_path() . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
-    false,
-    array("pdf", "rtf"),
-    array("php_version" => phpversion()),
-    array(
-      'driver' => 'postgres',
-      'username' => 'vagrant',
-      'host' => 'localhost',
-      'database' => 'samples',
-      'port' => '5433',
-    )
-  )->execute();
-```
 
 ##Requirements
 
@@ -154,16 +92,41 @@ Or in your `composer.json` file add:
 ```javascript
 {
     "require": {
-		"chrmorandi/yii2-jasper": "*",
+        "chrmorandi/yii2-jasper": "*",
     }
 }
 ```
 
 And the just run:
 
-	composer update
+    composer update
 
 and thats it.
+
+###Add the component to the configuration
+
+```php
+return [
+    ...
+    'components'          => [
+        'jasper' => [
+            'class' => 'chrmorandi\jasper',
+            'db' => [
+                'host' => localhost,
+                'port' => 5432,    
+                'driver' => 'postgres',
+                'dbname' => db_banco,
+                'username' => 'username',
+                'password' => 'password',
+                //'jdbcDir' => './jdbc',
+                //'jdbcUrl' => 'jdbc:postgresql://"+host+":"+port+"/"+dbname',
+            ], 
+        ],
+        ...
+    ],
+    ...
+];
+```
 
 ###Using
 
@@ -172,7 +135,7 @@ use chrmorandi\Jasper;
 
 public function actionIndex()
 {
-    $jasper = new Jasper;
+    $jasper = Yii::$app->jasper;;
 
     // Compile a JRXML to Jasper
     $jasper->compile(__DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jrxml')->execute();
