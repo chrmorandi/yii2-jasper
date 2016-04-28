@@ -46,7 +46,7 @@ class Jasper extends Component
     protected $the_command;    
     protected $background;
     protected $windows = false;
-    protected $formats = array('pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods', 'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint');
+    protected $formats = ['pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods', 'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint'];
     
 
     /**
@@ -71,8 +71,15 @@ class Jasper extends Component
         }
     }
 
-    /*
+    /**
      * Compile JasperReport template(JRXML) to native binary format, called Jasper file.
+     * 
+     * @param string $input_file 
+     * @param string $output_file
+     * @param string $output_file
+     * @param boolean $background
+     * 
+     * @return
      */
     public function compile($input_file, $output_file = false, $background = false)
     {
@@ -96,8 +103,24 @@ class Jasper extends Component
         return $this;
     }
 
-    /*
+    /**
      * Generates report . Accepts files in the format ".jrxml" or ".jasper".
+     * 
+     * ```php
+     * 
+     * $jasper->process(
+     *     __DIR__ . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
+     *     false,
+     *     ['pdf', 'ods'],
+     *     array("php_version" => "xxx")
+     * )->execute();
+     * ```
+     * 
+     * @param string $input_file 
+     * @param string $output_file
+     * @param array $format available formats : pdf, rtf, xls, xlsx, docx, odt, ods, pptx, csv, html, xhtml, xml, jrprint.
+     * @param array $parameters
+     * @param boolean $background
      */
     public function process($input_file, $output_file = false, $format = ["pdf"], $parameters = [],$background = false)
     {
