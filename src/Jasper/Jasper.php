@@ -99,7 +99,7 @@ class Jasper extends Component
     /*
      * Generates report . Accepts files in the format ".jrxml" or ".jasper".
      */
-    public function process($input_file, $output_file = false, $format = array("pdf"), $background = false)
+    public function process($input_file, $output_file = false, $format = ["pdf"], $parameters = [],$background = false)
     {
         if(is_null($input_file) || empty($input_file)){
             throw new \Exception("No input file", 1);
@@ -213,7 +213,7 @@ class Jasper extends Component
         if( $run_as_user !== false && strlen($run_as_user > 0) && !$this->windows )
             $this->the_command = "su -u " . $run_as_user . " -c \"" . $this->the_command . "\"";
 
-        $output     = array();
+        $output     = [];
         $return_var = 0;
 
         exec($this->the_command, $output, $return_var);
