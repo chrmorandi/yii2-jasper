@@ -5,6 +5,7 @@ namespace chrmorandi\jasper;
 use yii\base\Component;
 use yii\db\Connection;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\BaseStringHelper;
 
 /**
@@ -18,6 +19,7 @@ use yii\helpers\BaseStringHelper;
  *     'class' => 'chrmorandi\jasper',
  *     'redirect_output' => false, //optional
  *     'resource_directory' => false, //optional
+ *     'locale' => pt_BR, //optional
  *     'db' => [
  *         'host' => localhost,
  *         'port' => 5432,    
@@ -52,6 +54,7 @@ class Jasper extends Component
      * @var bool redirect output and errors to /dev/null
      */
     public $redirect_output = true;
+    public $locale = null;
     public $output_file = false;
 
     protected $executable = '/../JasperStarter/bin/jasperstarter';
@@ -169,6 +172,10 @@ class Jasper extends Component
         else {
             $resource = BaseStringHelper::dirname($input_file);
             $command .= ' -r '.$this->resource_directory;
+        }
+        
+        if (!empty($this->locale) && $this->locale != null) {
+            $parameters = ArrayHelper::merge(['REPORT_LOCALE' => $this->locale], $parameters);
         }
 
         if (count($parameters) > 0) {
