@@ -10,7 +10,7 @@ namespace chrmorandi\jasper;
 
 use yii\base\Component;
 use yii\db\Connection;
-use yii\db\Exception;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\BaseStringHelper;
 
@@ -99,8 +99,7 @@ class Jasper extends Component
      * @param string $output_file
      * @param string $output_file
      * @param bool   $background
-     *
-     * @return
+     * @return Jasper
      */
     public function compile($input_file, $output_file = false, $background = false)
     {
@@ -125,7 +124,7 @@ class Jasper extends Component
     }
 
     /**
-     * Generates report . Accepts files in the format ".jrxml" or ".jasper".
+     * Process report . Accepts files in the format ".jrxml" or ".jasper".
      *
      * ```php
      * $jasper->process(
@@ -141,6 +140,7 @@ class Jasper extends Component
      * jrprint.
      * @param string $output_file if false the input_file directory is used. Default is false
      * @param bool   $background  if true report is runing in the backgrount. The return status is 0. Default is false
+     * @return Jasper
      */
     public function process($input_file, $parameters = [], $format = ['pdf'], $output_file = false, $background = false)
     {
@@ -229,6 +229,12 @@ class Jasper extends Component
         return $this;
     }
 
+    /**
+     * Report parameters list
+     * @param type $input_file
+     * @return Jasper
+     * @throws Exception
+     */
     public function listParameters($input_file)
     {
         if (is_null($input_file) || empty($input_file)) {
@@ -246,6 +252,22 @@ class Jasper extends Component
         return $this;
     }
 
+    /**
+     * Output command
+     * @return string
+     */
+    public function output()
+    {
+        return escapeshellcmd($this->the_command);
+    }
+
+    /**
+     * Make report.
+     * 
+     * @param type $run_as_user Switch without password with "su" command need be enable.
+     * @return array
+     * @throws Exception
+     */
     public function execute($run_as_user = false)
     {
         if ($this->redirect_output && !$this->windows) {

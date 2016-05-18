@@ -3,7 +3,7 @@
     "type": "yii2-extension",
     "description": "Create Reports in PHP with JasperReports",
     "license": "MIT",
-    "keywords": ["reports","jasper","jasperreports","java","php","yii2"],
+    "keywords": ["reports","jasper","jasperreports","java","php","yii2", "yiiframework", "ireport"],
     "homepage": "https://github.com/chrmorandi/yii2-jasper",
     "authors": [
         {
@@ -16,6 +16,7 @@
         "yiisoft/yii2": "*"
     },
     "require-dev": {
+        "codeception/codeception": "*",
         "yiisoft/yii2-codeception": "*",
         "yiisoft/yii2-coding-standards": "*"
     },
