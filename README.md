@@ -9,7 +9,7 @@ Package to generate reports with [JasperReports 6](http://community.jaspersoft.c
 
 ##Install
 
-```
+```sh
 composer require chrmorandi/jasper
 ```
 
@@ -49,7 +49,7 @@ Open the `hello_world.jrxml` file with iReport or with your favorite text editor
 
 ##Requirements
 
-* Java JDK 1.6 or higher
+* Java JDK 1.8 or higher
 * PHP [exec()](http://php.net/manual/function.exec.php) function
 * [optional] [Mysql Connector](http://dev.mysql.com/downloads/connector/j/) (if you want to use Mysql database)
 * [optional] [PostgreSQL Connector](https://jdbc.postgresql.org/download.html) (if you want to use PostgreSQL database)
@@ -62,20 +62,22 @@ Open the `hello_world.jrxml` file with iReport or with your favorite text editor
 
 Check if you already have Java installed:
 
-```
+```sh
 $ java -version
-java version "1.7.0_80"
-Java(TM) SE Runtime Environment (build 1.7.0_80-b15)
-Java HotSpot(TM) 64-Bit Server VM (build 24.80-b11, mixed mode)
+java version "1.8.0_91"
+Java(TM) SE Runtime Environment (build 1.8.0_91-b14)
+Java HotSpot(TM) 64-Bit Server VM (build 25.91-b14, mixed mode)
 ```
 
 If you get:
 
-	command not found: java
+    command not found: java
 
 Then install it with: (Ubuntu/Debian)
 
-	$ sudo apt-get install default-jdk
+```sh
+    $ sudo apt-get install default-jdk
+```
 
 Now run the `java -version` again and check if the output is ok.
 
@@ -83,13 +85,13 @@ Now run the `java -version` again and check if the output is ok.
 
 Install [Composer](http://getcomposer.org) if you don't have it.
 
-```
+```sh
 composer require chrmorandi/yii2-jasper
 ```
 
 Or in your `composer.json` file add:
 
-```javascript
+```json
 {
     "require": {
         "chrmorandi/yii2-jasper": "*",
@@ -99,7 +101,9 @@ Or in your `composer.json` file add:
 
 And the just run:
 
-    composer update
+```sh
+composer update
+```
 
 and thats it.
 
@@ -111,17 +115,20 @@ return [
     'components'          => [
         'jasper' => [
             'class' => 'chrmorandi\jasper',
+            'redirect_output' => false, //optional
+            'resource_directory' => false, //optional
+            'locale' => pt_BR, //optional
             'db' => [
                 'host' => localhost,
                 'port' => 5432,    
                 'driver' => 'postgres',
                 'dbname' => db_banco,
-                'username' => 'username',
-                'password' => 'password',
-                //'jdbcDir' => './jdbc',
+                'username' => 'cajui',
+                'password' => 'cajui',
+                //'jdbcDir' => './jdbc', **Defaults to ./jdbc
                 //'jdbcUrl' => 'jdbc:postgresql://"+host+":"+port+"/"+dbname',
-            ], 
-        ],
+            ]
+        ]
         ...
     ],
     ...
@@ -135,31 +142,36 @@ use chrmorandi\Jasper;
 
 public function actionIndex()
 {
-    $jasper = Yii::$app->jasper;;
+    // Set alias for sample directory
+    Yii::setAlias('example', '@vendor/yii2-jasper/examples');
+
+    /* @var $jasper Jasper */
+    $jasper = Yii::$app->jasper;
 
     // Compile a JRXML to Jasper
-    $jasper->compile(__DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jrxml')->execute();
+    $jasper->compile(Yii::getAlias('@example') . '/hello_world.jrxml')->execute();
 
     // Process a Jasper file to PDF and RTF (you can use directly the .jrxml)
     $jasper->process(
-        __DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
-        false,
-        array("pdf", "rtf"),
-        array("php_version" => "xxx")
+        Yii::getAlias('@example') . '/hello_world.jasper', 
+        ['php_version' => 'xxx'],
+        ['pdf', 'rtf'],
+        'false', //output file
+        'false', //background
     )->execute();
 
     // List the parameters from a Jasper file.
-    $array = $jasper->list_parameters(
-        __DIR__ . '/../../vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper'
-    )->execute();
+    $array = $jasper->listParameters(Yii::getAlias('@example') . '/hello_world.jasper')->execute();
 
-    return ;
+    // return pdf file
+    Yii::$app->response->sendFile(Yii::getAlias('@example') . '/hello_world.pdf');
+
 }
 ```
 
 ###MySQL
 
-We ship the [MySQL connector](http://dev.mysql.com/downloads/connector/j/) (v5.1.34) in the `/src/JasperStarter/jdbc/` directory.
+We ship the [MySQL connector](http://dev.mysql.com/downloads/connector/j/) (v5.1.39) in the `/src/JasperStarter/jdbc/` directory.
 
 ###PostgreSQL
 
@@ -167,9 +179,9 @@ We ship the [PostgreSQL](https://jdbc.postgresql.org/) (v9.4-1208) in the `/src/
 
 ##Performance
 
-Depends on the complexity, amount of data and the resources of your machine (let me know your use case).
+Depends on the complexity, amount of data and the resources of your machine.
 
-I have a report that generates a *Invoice* with a DB connection, images and multiple pages and it takes about **3/4 seconds** to process. I suggest that you use a worker to generate the reports in the background.
+Is possible the generate the reports in the background.
 
 ##License
 

@@ -15,6 +15,10 @@
     "require": {
         "yiisoft/yii2": "*"
     },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-coding-standards": "*"
+    },
     "autoload": {
         "psr-4": { 
             "chrmorandi\\jasper\\": "src/Jasper/" 

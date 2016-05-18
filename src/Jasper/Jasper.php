@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link      https://github.com/chrmorandi/yii2-jasper for the canonical source repository
+ * @package   yii2-jasper
+ * @author    Christopher Mota <chrmorandi@gmail.com>
+ * @license   MIT License - view the LICENSE file that was distributed with this source code.
+ */
 
 namespace chrmorandi\jasper;
 
@@ -22,11 +28,11 @@ use yii\helpers\BaseStringHelper;
  *     'locale' => pt_BR, //optional
  *     'db' => [
  *         'host' => localhost,
- *         'port' => 5432,    
+ *         'port' => 5432,
  *         'driver' => 'postgres',
  *         'dbname' => db_banco,
- *         'username' => 'cajui',
- *         'password' => 'cajui',
+ *         'username' => 'username',
+ *         'password' => 'password',
  *         //'jdbcDir' => './jdbc', **Defaults to ./jdbc
  *         //'jdbcUrl' => 'jdbc:postgresql://"+host+":"+port+"/"+dbname',
  *     ]
@@ -34,7 +40,7 @@ use yii\helpers\BaseStringHelper;
  * ```
  *
  * @author Christopher M. Mota <chrmorandi@gmail.com>
- * @since 1.0.0
+ * @since  1.0.0
  */
 class Jasper extends Component
 {
@@ -61,7 +67,10 @@ class Jasper extends Component
     protected $the_command;
     protected $background;
     protected $windows = false;
-    protected $formats = ['pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods', 'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint'];
+    protected $formats = [
+        'pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods',
+        'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint'
+    ];
 
     /**
      * Initializes the Jasper component.
@@ -85,12 +94,12 @@ class Jasper extends Component
 
     /**
      * Compile JasperReport template(JRXML) to native binary format, called Jasper file.
-     * 
+     *
      * @param string $input_file
      * @param string $output_file
      * @param string $output_file
      * @param bool   $background
-     * 
+     *
      * @return
      */
     public function compile($input_file, $output_file = false, $background = false)
@@ -117,7 +126,7 @@ class Jasper extends Component
 
     /**
      * Generates report . Accepts files in the format ".jrxml" or ".jasper".
-     * 
+     *
      * ```php
      * $jasper->process(
      *     __DIR__ . '/vendor/chrmorandi/yii2-jasper/examples/hello_world.jasper',
@@ -125,10 +134,11 @@ class Jasper extends Component
      *     ['pdf', 'ods'],
      * )->execute();
      * ```
-     * 
+     *
      * @param string $input_file
      * @param array  $parameters
      * @param array  $format      available formats : pdf, rtf, xls, xlsx, docx, odt, ods, pptx, csv, html, xhtml, xml, jrprint.
+     * jrprint.
      * @param string $output_file if false the input_file directory is used. Default is false
      * @param bool   $background  if true report is runing in the backgrount. The return status is 0. Default is false
      */
@@ -168,8 +178,7 @@ class Jasper extends Component
 
         if ($this->resource_directory) {
             $command .= ' -r '.$this->resource_directory;
-        }
-        else {
+        } else {
             $resource = BaseStringHelper::dirname($input_file);
             $command .= ' -r '.$this->resource_directory;
         }
@@ -220,7 +229,7 @@ class Jasper extends Component
         return $this;
     }
 
-    public function list_parameters($input_file)
+    public function listParameters($input_file)
     {
         if (is_null($input_file) || empty($input_file)) {
             throw new Exception('No input file', 1);
@@ -257,7 +266,10 @@ class Jasper extends Component
         exec($this->the_command, $output, $return_var);
 
         if ($return_var != 0) {
-            throw new Exception('Your report has an error and couldn\'t be processed! Try to output the command: ' . escapeshellcmd($this->the_command), 1);
+            throw new Exception(
+                'Your report has an error and couldn\'t be processed! Try to output the command: ' .
+                escapeshellcmd($this->the_command), 1
+            );
         }
 
         return $output;
