@@ -94,7 +94,7 @@ Or in your `composer.json` file add:
 ```json
 {
     "require": {
-        "chrmorandi/yii2-jasper": "*",
+        "chrmorandi/yii2-jasper": "*"
     }
 }
 ```
@@ -122,9 +122,9 @@ return [
                 'host' => localhost,
                 'port' => 5432,    
                 'driver' => 'postgres',
-                'dbname' => db_banco,
-                'username' => 'cajui',
-                'password' => 'cajui',
+                'dbname' => 'db_banco',
+                'username' => 'username',
+                'password' => 'password',
                 //'jdbcDir' => './jdbc', **Defaults to ./jdbc
                 //'jdbcUrl' => 'jdbc:postgresql://"+host+":"+port+"/"+dbname',
             ]
@@ -143,7 +143,7 @@ use chrmorandi\Jasper;
 public function actionIndex()
 {
     // Set alias for sample directory
-    Yii::setAlias('example', '@vendor/yii2-jasper/examples');
+    Yii::setAlias('example', '@vendor/chrmorandi/yii2-jasper/examples');
 
     /* @var $jasper Jasper */
     $jasper = Yii::$app->jasper;
@@ -181,7 +181,7 @@ We ship the [PostgreSQL](https://jdbc.postgresql.org/) (v9.4-1208) in the `/src/
 
 Depends on the complexity, amount of data and the resources of your machine.
 
-Is possible the generate the reports in the background.
+Is possible generate reports in the background.
 
 ##License
 
