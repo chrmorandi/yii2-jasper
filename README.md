@@ -1,7 +1,6 @@
 # JasperReports for PHP
 
-[![Latest Stable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/stable)](https://packagist.org/packages/chrmorandi/yii2-jasper) 
-[![Latest Unstable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/unstable)](https://packagist.org/packages/chrmorandi/yii2-jasper)
+[![Latest Stable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/stable)](https://packagist.org/packages/chrmorandi/yii2-jasper)
 [![Total Downloads](https://poser.pugx.org/chrmorandi/yii2-jasper/downloads)](https://packagist.org/packages/chrmorandi/yii2-jasper) 
 [![License](https://poser.pugx.org/chrmorandi/yii2-jasper/license)](https://packagist.org/packages/chrmorandi/yii2-jasper)
 [![Build Status](https://travis-ci.org/chrmorandi/yii2-jasper.svg?branch=master)](https://travis-ci.org/chrmorandi/yii2-jasper)
