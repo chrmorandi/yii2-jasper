@@ -95,10 +95,10 @@ class Jasper extends Component
     /**
      * Compile JasperReport template(JRXML) to native binary format, called Jasper file.
      *
-     * @param string $input_file
-     * @param string $output_file
-     * @param string $output_file
-     * @param bool   $background
+     * @param  string $input_file
+     * @param  string $output_file
+     * @param  string $output_file
+     * @param  bool   $background
      * @return Jasper
      */
     public function compile($input_file, $output_file = false, $background = false)
@@ -134,12 +134,12 @@ class Jasper extends Component
      * )->execute();
      * ```
      *
-     * @param string $input_file
-     * @param array  $parameters
-     * @param array  $format      available formats : pdf, rtf, xls, xlsx, docx, odt, ods, pptx, csv, html, xhtml, xml, jrprint.
+     * @param  string $input_file
+     * @param  array  $parameters
+     * @param  array  $format      available formats : pdf, rtf, xls, xlsx, docx, odt, ods, pptx, csv, html, xhtml, xml, jrprint.
      * jrprint.
-     * @param string $output_file if false the input_file directory is used. Default is false
-     * @param bool   $background  if true report is runing in the backgrount. The return status is 0. Default is false
+     * @param  string $output_file if false the input_file directory is used. Default is false
+     * @param  bool   $background  if true report is runing in the backgrount. The return status is 0. Default is false
      * @return Jasper
      */
     public function process($input_file, $parameters = [], $format = ['pdf'], $output_file = false, $background = false)
@@ -178,9 +178,6 @@ class Jasper extends Component
 
         if ($this->resource_directory) {
             $command .= ' -r '.$this->resource_directory;
-        } else {
-            $resource = BaseStringHelper::dirname($input_file);
-            $command .= ' -r '.$this->resource_directory;
         }
         
         if (!empty($this->locale) && $this->locale != null) {
@@ -198,27 +195,27 @@ class Jasper extends Component
             $command .= ' -t '.$this->db['driver'];
             $command .= ' -u '.$this->db['username'];
 
-            if (isset($this->db['password']) && !empty($this->db['password'])) {
+            if (!empty($this->db['password'])) {
                 $command .= ' -p '.$this->db['password'];
             }
 
-            if (isset($this->db['host']) && !empty($this->db['host'])) {
+            if (!empty($this->db['host'])) {
                 $command .= ' -H '.$this->db['host'];
             }
 
-            if (isset($this->db['dbname']) && !empty($this->db['dbname'])) {
+            if (!empty($this->db['dbname'])) {
                 $command .= ' -n '.$this->db['dbname'];
             }
 
-            if (isset($this->db['port']) && !empty($this->db['port'])) {
+            if (!empty($this->db['port'])) {
                 $command .= ' --db-port '.$this->db['port'];
             }
 
-            if (isset($this->db['jdbc_url']) && !empty($this->db['jdbc_url'])) {
+            if (!empty($this->db['jdbc_url'])) {
                 $command .= ' --db-url '.$this->db['jdbc_url'];
             }
 
-            if (isset($this->db['jdbc_dir']) && !empty($this->db['jdbc_dir'])) {
+            if (!empty($this->db['jdbc_dir'])) {
                 $command .= ' --jdbc-dir '.$this->db['jdbc_dir'];
             }
         }
@@ -231,7 +228,8 @@ class Jasper extends Component
 
     /**
      * Report parameters list
-     * @param type $input_file
+     *
+     * @param  type $input_file
      * @return Jasper
      * @throws Exception
      */
@@ -254,6 +252,7 @@ class Jasper extends Component
 
     /**
      * Output command
+     *
      * @return string
      */
     public function output()
@@ -264,7 +263,7 @@ class Jasper extends Component
     /**
      * Make report.
      * 
-     * @param type $run_as_user Switch without password with "su" command need be enable.
+     * @param  type $run_as_user Switch without password with "su" command need be enable.
      * @return array
      * @throws Exception
      */

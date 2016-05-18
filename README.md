@@ -156,8 +156,8 @@ public function actionIndex()
         Yii::getAlias('@example') . '/hello_world.jasper', 
         ['php_version' => 'xxx'],
         ['pdf', 'rtf'],
-        'false', //output file
-        'false', //background
+        false, 
+        false 
     )->execute();
 
     // List the parameters from a Jasper file.

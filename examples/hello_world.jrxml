@@ -45,7 +45,7 @@
 			<staticText>
 				<reportElement uuid="4c3772ce-ee6a-42ae-b13d-babb1692d0d4" x="0" y="0" width="555" height="54"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[Made with JasperPHP]]></text>
+				<text><![CDATA[Made with chrmorandi/yii2-jasper extension]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
