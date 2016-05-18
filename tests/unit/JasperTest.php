@@ -46,7 +46,7 @@ class jasperTest extends \PHPUnit_Framework_TestCase
         
         exec($executable, $output, $returnVar);
 
-        if(count($output) == 16) {
+        if($returnVar != 0) {
             return $this->assertTrue(true);            
         }
         return $this->assertTrue(false);

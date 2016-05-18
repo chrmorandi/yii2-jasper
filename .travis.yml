@@ -30,7 +30,7 @@ before_script:
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 script:
-  - vendor/bin/codecept run --verbose
+  - vendor/bin/codecept run --steps
 
 after_script:
   - |
