@@ -4,6 +4,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/chrmorandi/yii2-jasper/v/unstable)](https://packagist.org/packages/chrmorandi/yii2-jasper)
 [![Total Downloads](https://poser.pugx.org/chrmorandi/yii2-jasper/downloads)](https://packagist.org/packages/chrmorandi/yii2-jasper) 
 [![License](https://poser.pugx.org/chrmorandi/yii2-jasper/license)](https://packagist.org/packages/chrmorandi/yii2-jasper)
+[![Build Status](https://travis-ci.org/chrmorandi/yii2-jasper.svg?branch=master)](https://travis-ci.org/chrmorandi/yii2-jasper)
 
 Package to generate reports with [JasperReports 6](http://community.jaspersoft.com/project/jasperreports-library) library through [JasperStarter v3](http://jasperstarter.sourceforge.net/) command-line tool.
 
