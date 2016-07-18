@@ -189,7 +189,7 @@ class Jasper extends Component
             }
         }
         
-        $command .= $this->databaseParams;
+        $command .= $this->databaseParams();
 
         $this->the_command = escapeshellcmd($command);
 
@@ -268,13 +268,13 @@ class Jasper extends Component
     /**
      * @return string
      */
-    protected function getDatabaseParams()
+    protected function databaseParams()
     {
         if (!isset($this->db)) {
             return '';
         }
         
-        $command .= ' -t '.$this->db['driver'];
+        $command = ' -t '.$this->db['driver'];
         $command .= ' -u '.$this->db['username'];
 
         if (!empty($this->db['password'])) {
