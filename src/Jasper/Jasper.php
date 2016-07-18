@@ -9,10 +9,9 @@
 namespace chrmorandi\jasper;
 
 use yii\base\Component;
-use yii\db\Connection;
 use yii\base\Exception;
+use yii\db\Connection;
 use yii\helpers\ArrayHelper;
-use yii\helpers\BaseStringHelper;
 
 /**
  * Jasper implements JasperReport application component creating reports.
@@ -60,12 +59,18 @@ class Jasper extends Component
      * @var bool redirect output and errors to /dev/null
      */
     public $redirect_output = true;
+    
+    /**
+     * @var boll if true report is runing in the backgrount. The return status is 0. Default is false
+     */
+    public $background = false;
     public $locale = null;
     public $output_file = false;
+    
 
     protected $executable = '/../JasperStarter/bin/jasperstarter';
     protected $the_command;
-    protected $background;
+    
     protected $windows = false;
     protected $formats = [
         'pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods',
@@ -98,26 +103,22 @@ class Jasper extends Component
      * @param  string $input_file
      * @param  string $output_file
      * @param  string $output_file
-     * @param  bool   $background
      * @return Jasper
      */
-    public function compile($input_file, $output_file = false, $background = false)
+    public function compile($input_file, $output_file = false)
     {
         if (is_null($input_file) || empty($input_file)) {
             throw new Exception('No input file', 1);
         }
 
         $command = __DIR__.$this->executable;
-
         $command .= ' compile ';
-
         $command .= $input_file;
 
         if ($output_file !== false) {
             $command .= ' -o '.$output_file;
         }
-
-        $this->background = $background;
+        
         $this->the_command = escapeshellcmd($command);
 
         return $this;
@@ -139,10 +140,9 @@ class Jasper extends Component
      * @param  array  $format      available formats : pdf, rtf, xls, xlsx, docx, odt, ods, pptx, csv, html, xhtml, xml, jrprint.
      * jrprint.
      * @param  string $output_file if false the input_file directory is used. Default is false
-     * @param  bool   $background  if true report is runing in the backgrount. The return status is 0. Default is false
      * @return Jasper
      */
-    public function process($input_file, $parameters = [], $format = ['pdf'], $output_file = false, $background = false)
+    public function process($input_file, $parameters = [], $format = ['pdf'], $output_file = false)
     {
         if (is_null($input_file) || empty($input_file)) {
             throw new Exception('No input file', 1);
@@ -161,9 +161,7 @@ class Jasper extends Component
         }
 
         $command = __DIR__.$this->executable;
-
         $command .= ' process ';
-
         $command .= $input_file;
 
         if ($output_file !== false) {
@@ -190,37 +188,9 @@ class Jasper extends Component
                 $command .= ' '.$key.'='.$value;
             }
         }
+        
+        $command .= $this->databaseParams;
 
-        if (isset($this->db)) {
-            $command .= ' -t '.$this->db['driver'];
-            $command .= ' -u '.$this->db['username'];
-
-            if (!empty($this->db['password'])) {
-                $command .= ' -p '.$this->db['password'];
-            }
-
-            if (!empty($this->db['host'])) {
-                $command .= ' -H '.$this->db['host'];
-            }
-
-            if (!empty($this->db['dbname'])) {
-                $command .= ' -n '.$this->db['dbname'];
-            }
-
-            if (!empty($this->db['port'])) {
-                $command .= ' --db-port '.$this->db['port'];
-            }
-
-            if (!empty($this->db['jdbc_url'])) {
-                $command .= ' --db-url '.$this->db['jdbc_url'];
-            }
-
-            if (!empty($this->db['jdbc_dir'])) {
-                $command .= ' --jdbc-dir '.$this->db['jdbc_dir'];
-            }
-        }
-
-        $this->background = $background;
         $this->the_command = escapeshellcmd($command);
 
         return $this;
@@ -240,9 +210,7 @@ class Jasper extends Component
         }
 
         $command = __DIR__.$this->executable;
-
         $command .= ' list_parameters ';
-
         $command .= $input_file;
 
         $this->the_command = escapeshellcmd($command);
@@ -262,7 +230,7 @@ class Jasper extends Component
 
     /**
      * Make report.
-     * 
+     *
      * @param  type $run_as_user Switch without password with "su" command need be enable.
      * @return array
      * @throws Exception
@@ -289,10 +257,50 @@ class Jasper extends Component
         if ($return_var != 0) {
             throw new Exception(
                 'Your report has an error and couldn\'t be processed! Try to output the command: ' .
-                escapeshellcmd($this->the_command), 1
+                escapeshellcmd($this->the_command),
+                1
             );
         }
 
         return $output;
+    }
+    
+    /**
+     * @return string
+     */
+    protected function getDatabaseParams()
+    {
+        if (!isset($this->db)) {
+            return '';
+        }
+        
+        $command .= ' -t '.$this->db['driver'];
+        $command .= ' -u '.$this->db['username'];
+
+        if (!empty($this->db['password'])) {
+            $command .= ' -p '.$this->db['password'];
+        }
+
+        if (!empty($this->db['host'])) {
+            $command .= ' -H '.$this->db['host'];
+        }
+
+        if (!empty($this->db['dbname'])) {
+            $command .= ' -n '.$this->db['dbname'];
+        }
+
+        if (!empty($this->db['port'])) {
+            $command .= ' --db-port '.$this->db['port'];
+        }
+
+        if (!empty($this->db['jdbc_url'])) {
+            $command .= ' --db-url '.$this->db['jdbc_url'];
+        }
+
+        if (!empty($this->db['jdbc_dir'])) {
+            $command .= ' --jdbc-dir '.$this->db['jdbc_dir'];
+        }
+        
+        return $command;
     }
 }
