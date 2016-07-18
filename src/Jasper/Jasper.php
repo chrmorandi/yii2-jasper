@@ -263,7 +263,7 @@ class Jasper extends Component
      */
     protected function unixParams()
     {
-        if($this->windows) {
+        if ($this->windows) {
             return;
         }
         
