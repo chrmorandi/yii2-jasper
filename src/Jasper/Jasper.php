@@ -264,7 +264,7 @@ class Jasper extends Component
     protected function unixParams()
     {
         if($this->windows) {
-            return '';
+            return;
         }
         
         $this->the_command .= $this->redirect_output ? ' > /dev/null 2>&1' : '';
