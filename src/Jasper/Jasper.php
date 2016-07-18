@@ -254,7 +254,7 @@ class Jasper extends Component
 
         exec($this->the_command, $output, $return_var);
 
-        if ($return_var != 0) {
+        if ($return_var !== 0) {
             throw new Exception(
                 'Your report has an error and couldn\'t be processed! Try to output the command: '.
                 escapeshellcmd($this->the_command),
