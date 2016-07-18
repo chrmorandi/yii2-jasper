@@ -64,9 +64,14 @@ class Jasper extends Component
      * @var boll if true report is runing in the backgrount. The return status is 0. Default is false
      */
     public $background = false;
-    public $locale = null;
-    public $output_file = false;
     
+    /**
+     *
+     * @var bool|string Switch without password with "su" command need be enable.
+     */
+    public $run_as_user = false;
+    public $locale = null;
+    public $output_file = false; 
 
     protected $executable = '/../JasperStarter/bin/jasperstarter';
     protected $the_command;
@@ -231,24 +236,12 @@ class Jasper extends Component
     /**
      * Make report.
      *
-     * @param  type $run_as_user Switch without password with "su" command need be enable.
      * @return array
      * @throws Exception
      */
-    public function execute($run_as_user = false)
+    public function execute()
     {
-        if ($this->redirect_output && !$this->windows) {
-            $this->the_command .= ' > /dev/null 2>&1';
-        }
-
-        if ($this->background && !$this->windows) {
-            $this->the_command .= ' &';
-        }
-
-        if ($run_as_user !== false && strlen($run_as_user > 0) && !$this->windows) {
-            $this->the_command = 'su -u '.$run_as_user.' -c "'.$this->the_command.'"';
-        }
-
+        $this->unixParams();
         $output = [];
         $return_var = 0;
 
@@ -265,6 +258,23 @@ class Jasper extends Component
         return $output;
     }
     
+    /**
+     * Set optional Unix parameters
+     */
+    protected function unixParams()
+    {
+        if($this->windows) {
+            return '';
+        }
+        
+        $this->the_command .= $this->redirect_output ? ' > /dev/null 2>&1' : '';
+        $this->the_command .= $this->background ? ' &' : '';
+        $this->the_command = $this->run_as_user 
+                ? 'su -u '.$run_as_user.' -c "'.$this->the_command.'"' 
+                : $this->the_command;
+    }
+
+
     /**
      * @return string
      */
