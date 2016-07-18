@@ -256,7 +256,7 @@ class Jasper extends Component
 
         if ($return_var != 0) {
             throw new Exception(
-                'Your report has an error and couldn\'t be processed! Try to output the command: ' .
+                'Your report has an error and couldn\'t be processed! Try to output the command: '.
                 escapeshellcmd($this->the_command),
                 1
             );
