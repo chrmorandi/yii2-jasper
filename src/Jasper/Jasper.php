@@ -270,7 +270,7 @@ class Jasper extends Component
         $this->the_command .= $this->redirect_output ? ' > /dev/null 2>&1' : '';
         $this->the_command .= $this->background ? ' &' : '';
         $this->the_command = $this->run_as_user 
-                ? 'su -u '.$run_as_user.' -c "'.$this->the_command.'"' 
+                ? 'su -u '.$this->run_as_user.' -c "'.$this->the_command.'"' 
                 : $this->the_command;
     }
 
