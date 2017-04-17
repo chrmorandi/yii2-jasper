@@ -115,7 +115,7 @@ return [
     ...
     'components'          => [
         'jasper' => [
-            'class' => 'chrmorandi\jasper',
+            'class' => chrmorandi\jasper\Jasper::className(),
             'redirect_output' => false, //optional
             'resource_directory' => false, //optional
             'locale' => pt_BR, //optional
@@ -139,7 +139,7 @@ return [
 ###Using
 
 ```php
-use chrmorandi\Jasper;
+use chrmorandi\jasper\Jasper;
 
 public function actionIndex()
 {
