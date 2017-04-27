@@ -50,7 +50,7 @@ Open the `hello_world.jrxml` file with iReport or with your favorite text editor
 
 ##Requirements
 
-* Java JDK 1.8 or higher
+* Java JDK 8 or higher
 * PHP [exec()](http://php.net/manual/function.exec.php) function
 * [optional] [Mysql Connector](http://dev.mysql.com/downloads/connector/j/) (if you want to use Mysql database)
 * [optional] [PostgreSQL Connector](https://jdbc.postgresql.org/download.html) (if you want to use PostgreSQL database)
