@@ -110,6 +110,9 @@ and thats it.
 
 ###Add the component to the configuration
 
+Use Data Source Name (DSN) for connection information with the database in format like Driver invocation.
+See [http://php.net/manual/pt_BR/pdo.construct.php](http://php.net/manual/pt_BR/pdo.construct.php)
+
 ```php
 return [
     ...
@@ -120,10 +123,7 @@ return [
             'resource_directory' => false, //optional
             'locale' => pt_BR, //optional
             'db' => [
-                'host' => localhost,
-                'port' => 5432,    
-                'driver' => 'postgres',
-                'dbname' => 'db_banco',
+                'dsn' =>'psql:host=localhost;port=5432;dbname=myDatabase',
                 'username' => 'username',
                 'password' => 'password',
                 //'jdbcDir' => './jdbc', **Defaults to ./jdbc

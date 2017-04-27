@@ -26,10 +26,7 @@ use yii\helpers\ArrayHelper;
  *     'resource_directory' => false, //optional
  *     'locale' => pt_BR, //optional
  *     'db' => [
- *         'host' => localhost,
- *         'port' => 5432,
- *         'driver' => 'postgres',
- *         'dbname' => db_banco,
+ *         'dsn' =>'psql:host=localhost;port=5432;dbname=myDatabase',
  *         'username' => 'username',
  *         'password' => 'password',
  *         //'jdbcDir' => './jdbc', **Defaults to ./jdbc
@@ -80,6 +77,17 @@ class Jasper extends Component
     protected $formats = [
         'pdf', 'rtf', 'xls', 'xlsx', 'docx', 'odt', 'ods',
         'pptx', 'csv', 'html', 'xhtml', 'xml', 'jrprint'
+    ];
+    
+    /**
+     * @var array map pdo driver to jdbc driver name
+     */
+    static $pdoDriverCompatibility = [
+        'pgsql'    => 'postgres',
+        'mysql'    => 'mysql',
+        'sqlite'   =>  'sqlite',
+        'firebird' => 'firebirdsql',
+        'oci'      => 'oracle',
     ];
 
     /**
@@ -284,23 +292,28 @@ class Jasper extends Component
             return '';
         }
         
-        $command = ' -t '.$this->db['driver'];
+        if (empty($this->db['jdbc_url'])) {
+            $pos = strpos($this->db['dsn'], ':');
+            $driver = strtolower(substr($this->db['dsn'], 0, $pos)); 
+            $command = ' -t '. self::$pdoDriverCompatibility[$driver];
+        }
+
         $command .= ' -u '.$this->db['username'];
 
         if (!empty($this->db['password'])) {
             $command .= ' -p '.$this->db['password'];
         }
 
-        if (!empty($this->db['host'])) {
-            $command .= ' -H '.$this->db['host'];
+        if (!empty($host = $this->getDsnValue('host'))) {
+            $command .= ' -H '.$host;
         }
 
-        if (!empty($this->db['dbname'])) {
-            $command .= ' -n '.$this->db['dbname'];
+        if (!empty($dbname = $this->getDsnValue('dbname'))) {
+            $command .= ' -n '.$dbname;
         }
 
-        if (!empty($this->db['port'])) {
-            $command .= ' --db-port '.$this->db['port'];
+        if (!empty($port = $this->getDsnValue('port'))) {
+            $command .= ' --db-port '.$port;
         }
 
         if (!empty($this->db['jdbc_url'])) {
@@ -312,5 +325,23 @@ class Jasper extends Component
         }
         
         return $command;
+    }
+    
+    /**
+     * @param string $dsnParameter
+     * @param string|null $default
+     * @throws RuntimeException
+     * @return string|null
+     */
+    protected function getDsnValue($dsnParameter, $default = NULL)
+    {
+        $pattern = sprintf('~%s=([^;]*)(?:;|$)~', preg_quote($dsnParameter, '~'));
+
+        $result = preg_match($pattern, $this->db['dsn'], $matches);
+        if ($result === FALSE) {
+            throw new Exception('Regular expression matching failed unexpectedly.');
+        }
+
+        return $result ? $matches[1] : $default;
     }
 }
