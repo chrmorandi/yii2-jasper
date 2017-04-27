@@ -82,7 +82,7 @@ class Jasper extends Component
     /**
      * @var array map pdo driver to jdbc driver name
      */
-    static $pdoDriverCompatibility = [
+    protected static $pdoDriverCompatibility = [
         'pgsql'    => 'postgres',
         'mysql'    => 'mysql',
         'sqlite'   =>  'sqlite',
@@ -202,7 +202,9 @@ class Jasper extends Component
             }
         }
         
-        $command .= $this->databaseParams();
+        if (!empty($this->db)) {
+            $command .= $this->databaseParams();
+        }
 
         $this->the_command = escapeshellcmd($command);
 
@@ -293,9 +295,15 @@ class Jasper extends Component
         }
         
         if (empty($this->db['jdbc_url'])) {
-            $pos = strpos($this->db['dsn'], ':');
-            $driver = strtolower(substr($this->db['dsn'], 0, $pos)); 
-            $command = ' -t '. self::$pdoDriverCompatibility[$driver];
+            $driver = strtolower(substr($this->db['dsn'], 0, strpos($this->db['dsn'], ':'))); 
+            $command = ' -t '.self::$pdoDriverCompatibility[$driver];
+            $command .= ' -H '.$this->getDsnValue('host');
+            $command .= ' -n '.$this->getDsnValue('dbname');            
+            if (!empty($port = $this->getDsnValue('port'))) {
+                $command .= ' --db-port '.$port;
+            }
+        } else {
+            $command = ' --db-url '.$this->db['jdbc_url'];
         }
 
         $command .= ' -u '.$this->db['username'];
@@ -304,26 +312,10 @@ class Jasper extends Component
             $command .= ' -p '.$this->db['password'];
         }
 
-        if (!empty($host = $this->getDsnValue('host'))) {
-            $command .= ' -H '.$host;
-        }
-
-        if (!empty($dbname = $this->getDsnValue('dbname'))) {
-            $command .= ' -n '.$dbname;
-        }
-
-        if (!empty($port = $this->getDsnValue('port'))) {
-            $command .= ' --db-port '.$port;
-        }
-
-        if (!empty($this->db['jdbc_url'])) {
-            $command .= ' --db-url '.$this->db['jdbc_url'];
-        }
-
         if (!empty($this->db['jdbc_dir'])) {
             $command .= ' --jdbc-dir '.$this->db['jdbc_dir'];
         }
-        
+
         return $command;
     }
     
