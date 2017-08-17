@@ -118,10 +118,10 @@ return [
     ...
     'components'          => [
         'jasper' => [
-            'class' => chrmorandi\jasper\Jasper::className(),
+            'class' => 'chrmorandi\jasper\Jasper::className()',
             'redirect_output' => false, //optional
             'resource_directory' => false, //optional
-            'locale' => pt_BR, //optional
+            'locale' => 'pt_BR', //optional
             'db' => [
                 'dsn' =>'psql:host=localhost;port=5432;dbname=myDatabase',
                 'username' => 'username',
